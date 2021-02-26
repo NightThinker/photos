@@ -33,7 +33,7 @@ const Photo = () => {
 
   return (
     <Layout>
-      <div className='grid grid-cols-4 my-7 gap-3'>
+      <div className='grid grid-cols-4 gap-3'>
         {photos.map(({ id, thumbnailUrl, title }) => (
           <div key={id} className='shadow-md rounded-lg'>
             <img src={thumbnailUrl} alt='img' className='w-full h-48 rounded-t-lg' />
