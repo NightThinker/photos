@@ -1,35 +1,53 @@
-import { useEffect } from 'react'
-import Layout from '../../shared/theme/Layout/Layout'
+import { useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import Fuse from 'fuse.js';
 
+import Layout from '../../shared/theme/Layout/Layout'
 import { onGetPhotoGroup } from '../../shared/api/photo'
-import logo from '../../logo.svg'
 
 const Album = () => {
+  const [album, setAlbum] = useState([])
+  const [initAlbum, setInitAlbum] = useState([])
+  const [search, setSearch] = useState('')
+
+  const history = useHistory()
+
   useEffect(() => {
     (async () => {
       const data = await onGetPhotoGroup()
       console.log('data', data)
+      setAlbum(data)
+      setInitAlbum(data)
     })()
   }, [])
+
+  const fuse = new Fuse(album, {
+    keys: ['albumId']
+  })
+
+  const onChangeSearch = (e) => {
+    setSearch(e.target.value);
+    if (!e.target.value) {
+      setAlbum(initAlbum)
+      return;
+    }
+    const results = fuse.search(e.target.value);
+    setAlbum(results.map(i => i.item));
+  }
+
   return (
-    <Layout>
-      <div>
-        <h1>Album1</h1>
-        <div className='grid grid-cols-6'>
-          <img src={logo} alt='img' />
-          <img src={logo} alt='img' />
-          <img src={logo} alt='img' />
-          <img src={logo} alt='img' />
-          <img src={logo} alt='img' />
-          <img src={logo} alt='img' />
-          <img src={logo} alt='img' />
-          <img src={logo} alt='img' />
-          <img src={logo} alt='img' />
-          <img src={logo} alt='img' />
-          <img src={logo} alt='img' />
-          <img src={logo} alt='img' />
+    <Layout search={search} onChange={onChangeSearch}>
+      {album.map(item => (
+        <div>
+          <h1>{`Album ${item.albumId}`}</h1>
+          <div className='grid grid-cols-6 gap-2'>
+            {item.photos.slice(0, 11).map(i => (
+              <img src={i.thumbnailUrl} alt='img' className='rounded-lg' />
+            ))}
+            <div className='w-full h-full border rounded-lg' onClick={() => history.push(`/album/${item.albumId}`)}>{item.photos.length - 11}</div>
+          </div>
         </div>
-      </div>
+      ))}
     </Layout>
   )
 }

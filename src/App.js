@@ -7,6 +7,7 @@ import {
 
 import Album from './feature/album/Album'
 import Photo from './feature/photo/Photo'
+import AlbumById from './feature/album/AlbumById'
 import Logo from './shared/components/Logo/Logo'
 
 import './App.css';
@@ -28,6 +29,9 @@ function App() {
           </ul>
         </nav>
         <Switch>
+          <Route path="/album/:id">
+            <AlbumById />
+          </Route>
           <Route path="/album">
             <Album />
           </Route>
