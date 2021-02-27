@@ -13,7 +13,6 @@ const Photo = () => {
   useEffect(() => {
     (async () => {
       const { data } = await onGetPhoto()
-      console.log('data', data)
       setPhotos(data)
       setTotalPhotos(data)
     })()

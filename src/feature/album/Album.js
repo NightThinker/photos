@@ -18,7 +18,6 @@ const Album = () => {
   useEffect(() => {
     (async () => {
       const data = await onGetPhotoGroup()
-      console.log('data', data)
       setAlbum(data)
       setInitAlbum(data)
     })()
@@ -39,7 +38,6 @@ const Album = () => {
   }
 
   const onClickMore = (data) => {
-    console.log('data', data)
     setAlbumAtom(data)
     history.push(`/album/${data.albumId}`)
   }
