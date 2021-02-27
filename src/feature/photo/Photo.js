@@ -1,19 +1,27 @@
 import { useEffect, useState } from 'react'
+import Fuse from 'fuse.js';
 
 import Layout from '../../shared/theme/Layout/Layout'
 import { onGetPhoto } from '../../shared/api/photo'
 
 const Photo = () => {
   const [photos, setPhotos] = useState([])
-  const [limit, setLimit] = useState(12)
+  const [totalPhotos, setTotalPhotos] = useState([])
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     (async () => {
-      const { data } = await onGetPhoto(limit)
+      const { data } = await onGetPhoto()
       console.log('data', data)
       setPhotos(data)
+      setTotalPhotos(data)
     })()
   }, [])
+
+  const fuse = new Fuse(photos, {
+    keys: ['albumId', 'title']
+  })
+
 
   const truncateString = str => {
     if (str.length > 24) {
@@ -24,15 +32,18 @@ const Photo = () => {
     }
   }
 
-  const onClickMore = async () => {
-    setLimit(limit + 12)
-    const { data } = await onGetPhoto(limit + 12)
-    console.log('data', data)
-    setPhotos(data)
+  const onChangeSearch = (e) => {
+    setSearch(e.target.value);
+    if (!e.target.value) {
+      setPhotos(totalPhotos)
+      return;
+    }
+    const results = fuse.search(e.target.value);
+    setPhotos(results);
   }
 
   return (
-    <Layout>
+    <Layout search={search} onChange={onChangeSearch}>
       <div className='grid grid-cols-4 gap-3'>
         {photos.map(({ id, thumbnailUrl, title }) => (
           <div key={id} className='shadow-md rounded-lg'>
@@ -40,7 +51,6 @@ const Photo = () => {
             <p className='p-3'>{truncateString(title)}</p>
           </div>
         ))}
-        <button onClick={() => onClickMore()}>more</button>
       </div>
     </Layout>
   )

@@ -2,12 +2,8 @@ import axios from 'axios'
 // import groupBy from 'lodash/groupBy'
 import _ from 'lodash'
 
-export const onGetPhoto = (limt) => {
-  return axios.get(`https://jsonplaceholder.typicode.com/photos`, {
-    params: {
-      _limit: limt
-    }
-  })
+export const onGetPhoto = () => {
+  return axios.get(`https://jsonplaceholder.typicode.com/photos`)
 }
 
 
