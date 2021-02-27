@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Fuse from 'fuse.js';
+import truncate from 'lodash/truncate'
 
 import Layout from '../../shared/theme/Layout/Layout'
 import { onGetPhoto } from '../../shared/api/photo'
@@ -22,16 +23,6 @@ const Photo = () => {
     keys: ['albumId', 'title']
   })
 
-
-  const truncateString = str => {
-    if (str.length > 24) {
-      let subStr = str.substring(0, 24);
-      return subStr + "...";
-    } else {
-      return str;
-    }
-  }
-
   const onChangeSearch = (e) => {
     setSearch(e.target.value);
     if (!e.target.value) {
@@ -48,7 +39,11 @@ const Photo = () => {
         {photos.map(({ id, thumbnailUrl, title }) => (
           <div key={id} className='shadow-md rounded-lg'>
             <img src={thumbnailUrl} alt='img' className='w-full h-48 rounded-t-lg' />
-            <p className='p-3'>{truncateString(title)}</p>
+            <p className='p-3'>{
+              truncate(title, {
+                'length': 24,
+                'separator': '...'
+              })}</p>
           </div>
         ))}
       </div>
