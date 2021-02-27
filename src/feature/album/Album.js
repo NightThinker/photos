@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import Fuse from 'fuse.js';
 import { useSetRecoilState } from 'recoil'
+import Skeleton from "react-loading-skeleton";
 
 import Layout from '../../shared/theme/Layout/Layout'
 import { onGetPhotoGroup } from '../../shared/api/photo'
 import { albumAtom } from '../../shared/store/storeAlbum'
+import Text from '../../shared/components/Text/Text'
 
 const Album = () => {
   const [album, setAlbum] = useState([])
@@ -44,17 +46,27 @@ const Album = () => {
 
   return (
     <Layout search={search} onChange={onChangeSearch}>
-      {album.map(item => (
-        <div>
-          <h1>{`Album ${item.albumId}`}</h1>
-          <div className='grid grid-cols-6 gap-2'>
-            {item.photos.slice(0, 11).map(i => (
-              <img src={i.thumbnailUrl} alt='img' className='rounded-lg' />
-            ))}
-            <div className='w-full h-full border rounded-lg' onClick={() => onClickMore(item)}>{item.photos.length - 11}</div>
-          </div>
+      {album.length ? (
+        <div className='flex flex-col gap-12'>
+          {album.map(item => (
+            <div>
+              <Text size='text-xl'>{`Album ${item.albumId}`}</Text>
+              <div className='grid grid-cols-6 gap-2 mt-4'>
+                {item.photos.slice(0, 11).map(i => (
+                  <img src={i.thumbnailUrl} alt='img' className='rounded-lg' />
+                ))}
+                <div className='w-full h-full border rounded-lg flex justify-center items-center bg-gray-50 cursor-pointer' onClick={() => onClickMore(item)}>
+                  <Text size='text-4xl' color='text-gray-400'>
+
+                    {`+ ${item.photos.length - 11}`}
+                  </Text>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      ) : <Skeleton count={3} />}
+
     </Layout>
   )
 }

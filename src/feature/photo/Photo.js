@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import Fuse from 'fuse.js';
 import truncate from 'lodash/truncate'
+import Skeleton from "react-loading-skeleton";
 
 import Layout from '../../shared/theme/Layout/Layout'
 import { onGetPhoto } from '../../shared/api/photo'
+import Text from '../../shared/components/Text/Text'
 
 const Photo = () => {
   const [photos, setPhotos] = useState([])
@@ -34,18 +36,20 @@ const Photo = () => {
 
   return (
     <Layout search={search} onChange={onChangeSearch}>
-      <div className='grid grid-cols-4 gap-3'>
-        {photos.map(({ id, thumbnailUrl, title }) => (
-          <div key={id} className='shadow-md rounded-lg'>
-            <img src={thumbnailUrl} alt='img' className='w-full h-48 rounded-t-lg' />
-            <p className='p-3'>{
-              truncate(title, {
-                'length': 24,
-                'separator': '...'
-              })}</p>
-          </div>
-        ))}
-      </div>
+      {photos.length ? (
+        <div className='grid grid-cols-4 gap-3'>
+          {photos.map(({ id, thumbnailUrl, title }) => (
+            <div key={id} className='shadow-md rounded-lg'>
+              <img src={thumbnailUrl} alt='img' className='w-full h-48 rounded-t-lg' />
+              <Text className='p-3'>{
+                truncate(title, {
+                  'length': 24,
+                  'separator': '...'
+                })}</Text>
+            </div>
+          ))}
+        </div>
+      ) : <Skeleton count={3} />}
     </Layout>
   )
 }
